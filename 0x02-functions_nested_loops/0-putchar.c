@@ -1,19 +1,19 @@
-#include "putchar.h"
+#include "main.h"
 
 /**
- * main - Entry point
- * Return:0
+ * main - This program prints the phrase Hello, World
+ * Return: Always 0 (Success)
  */
-
 int main(void)
 {
-char c[10] = "_putchar";
-int i = 0;
-while (i < 9)
-{
-_putchar(c[i]);
-i++;
-}
-_putchar('\n');
-return (0);
+	char ch[] = "_putchar";
+	int i;
+
+	for (i = 0; ch[i] != '\0'; i++)
+	{
+		_putchar(ch[i]);
+	}
+
+	_putchar('\n');
+	return (0);
 }
