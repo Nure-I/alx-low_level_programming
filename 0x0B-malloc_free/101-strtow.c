@@ -1,84 +1,111 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 /**
- * strtow - char
- * @str: pointer to string params
- * Return: char
+ * wordnos - counts no of words in a given string
+ * @str: pointer to the string
+ *
+ * Return: No. of words in the string (int)
  */
-
-char **strtow(char *str)
+int wordnos(char *str)
 {
-	int i = 0, j = 0, k = 0;
-	int len = 0, count = 0;
-	char **f, *col;
+	int wordno, i, j;
 
-	if (!str || !*str)
+	wordno = 0;
+	i = 0;
+	while (*(str + i) != '\0')
 	{
-		return (NULL);
-	}
-
-	while (*(str + i))
-	{
-		if (*(str + i) != ' ')
+		if (*(str + i) != 32 && *(str + i) != '\0')
 		{
-			if (*(str + i + 1) == ' ' || *(str + i + 1) == 0)
-			{
-				count += 1;
-			}
+			j = i;
+			while (*(str + j) != 32 && *(str + j) != '\0')
+				j++;
+			wordno++;
+			i = j - 1;
 		}
 		i++;
 	}
+	return (wordno);
+}
 
-	if (count == 0)
-	{
-		return (NULL);
-	}
-	count += 1;
-	f = malloc(sizeof(char *) * count);
+/**
+ * cpystr - copies words in string to different elements of 2d array of strings
+ * @s: double pointer to a 2D array of strings
+ * @str: pointer to string whose words are to be copied
+ *
+ * Return: void
+ */
+void cpystr(char **s, char *str)
+{
+	int i, j, l, idx;
 
-	if (!f)
-	{
-		return (NULL);
-	}
 	i = 0;
-
-	while (*str)
+	idx = 0;
+	while (*(str + i) != '\0')
 	{
-		while (*str == ' ' && *str)
+		if (*(str + i) != 32 && *(str + i) != '\0')
 		{
-			str++;
-		}
-		len = 0;
-
-		while (*(str + len) != ' ' && *(str + len))
-		{
-			len += 1;
-		}
-		len += 1;
-		col = malloc(sizeof(char) * len);
-
-		if (!col)
-		{
-			for (k = j - 1; k >= 0; k--)
+			j = i;
+			l = 0;
+			while (*(str + j) != 32 && *(str + j) != '\0')
 			{
-				free(f[k]);
+				s[idx][l] = *(str + j);
+				l++;
+				j++;
 			}
-			free(f);
-			return (NULL);
+			s[idx][l] = '\0';
+			idx++;
+			i = j;
 		}
-
-		for (k = 0; k < (len - 1);  k++)
-		{
-			*(col + k) = *(str++);
-		}
-		*(col + k) = '\0';
-		*(f + j) = col;
-
-		if (j < (count - 1))
-		{
-			j++;
-		}
+		i++;
 	}
-	*(f + j) = NULL;
-	return (f);
-} /*yes*/
+}
+
+/**
+ * strtow - splits a string into words and stores the words in an array
+ * @str: pointer to string
+ *
+ * Return: double pointer to the array containing the words
+ */
+char **strtow(char *str)
+{
+	char **s;
+	int wordno, i, j, k, length, idx;
+
+	if (str == NULL || str[0] == '\0')
+		return (0);
+	wordno = wordnos(str);
+	s = (char **)malloc(sizeof(char *) * (wordno + 1));
+	if (s == 0 || wordno == 0)
+		return (0);
+	i = 0;
+	idx = 0;
+	while (*(str + i) != '\0')
+	{
+		if (*(str + i) != 32 && *(str + i) != '\0')
+		{
+			j = i;
+			length = 0;
+			while (*(str + j) != 32 && *(str + j) != '\0')
+			{
+				length++;
+				printf("Length is %d\n", length);
+				j++;
+			}
+			*(s + idx) = (char *)malloc(sizeof(char) * (length + 1));
+			if (*(s + idx) == 0)
+			{
+				for (k = 0; k < idx; k++)
+					free(*(s + k));
+				free(s);
+				return (0);
+			}
+			idx++;
+			i = j - 1;
+			printf("value of i is %d \n", i);
+		}
+		i++;
+	}
+	cpystr(s, str);
+	return (s);
+}
